@@ -6,8 +6,8 @@ import com.fossilfinder.service.FossilDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,14 +19,18 @@ import java.util.Map;
  * Territory REST Controller
  * Handles all territory and fossil location endpoints
  */
-@Slf4j
 @RestController
 @RequestMapping("/api")
-@RequiredArgsConstructor
 @Tag(name = "Territories", description = "Fossil location and territory data")
 public class TerritoryController {
 
+    private static final Logger log = LoggerFactory.getLogger(TerritoryController.class);
+
     private final FossilDataService fossilDataService;
+
+    public TerritoryController(FossilDataService fossilDataService) {
+        this.fossilDataService = fossilDataService;
+    }
 
     @GetMapping("/territories")
     @Operation(summary = "Get all territories", description = "Returns metadata for all available territories")

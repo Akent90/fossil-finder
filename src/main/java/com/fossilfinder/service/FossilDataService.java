@@ -4,7 +4,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fossilfinder.model.FossilLocation;
 import com.fossilfinder.model.SearchResult;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -20,9 +21,10 @@ import java.util.Map;
  * Fossil Data Service
  * Handles reading and searching fossil location data
  */
-@Slf4j
 @Service
 public class FossilDataService {
+
+    private static final Logger log = LoggerFactory.getLogger(FossilDataService.class);
 
     private final ObjectMapper objectMapper;
     private final ResourceLoader resourceLoader;
