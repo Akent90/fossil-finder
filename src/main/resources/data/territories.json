@@ -1,0 +1,26 @@
+{
+  "territories": [
+    {
+      "code": "OH",
+      "name": "Ohio",
+      "country": "USA",
+      "dataFile": "OH.json",
+      "locationCount": 3
+    }
+  ],
+  "byCountry": {
+    "USA": [
+      {
+        "code": "OH",
+        "name": "Ohio",
+        "country": "USA",
+        "dataFile": "OH.json",
+        "locationCount": 3
+      }
+    ],
+    "Canada": [],
+    "Other": []
+  },
+  "totalTerritories": 1,
+  "lastUpdated": "2026-04-11T12:00:00"
+}
