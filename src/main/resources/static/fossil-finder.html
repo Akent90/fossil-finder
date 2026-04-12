@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fossil Finder - Browse Sites</title>
+
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Literata:wght@400;600;700&family=Unbounded:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/search.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <div class="header-left">
+          <h1>Fossil Finder</h1>
+          <div class="territory-display">
+            <span class="territory-code" id="territoryCode">--</span>
+            <span id="territoryName">Loading...</span>
+          </div>
+        </div>
+        <a href="index.html" class="back-button">← All Territories</a>
+      </header>
+
+      <div class="search-panel">
+        <div class="filter-grid">
+          <div class="filter-group">
+            <label for="location">Location / County</label>
+            <input
+              type="text"
+              id="location"
+              placeholder="e.g., Cincinnati, Adams County"
+            />
+          </div>
+          <div class="filter-group">
+            <label for="age">Geological Age</label>
+            <select id="age">
+              <option value="">All Ages</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label for="formation">Formation</label>
+            <select id="formation">
+              <option value="">All Formations</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label for="fossil">Fossil Type</label>
+            <input
+              type="text"
+              id="fossil"
+              placeholder="e.g., trilobites, brachiopods"
+            />
+          </div>
+        </div>
+        <div class="search-actions">
+          <button class="btn-secondary" onclick="clearFilters()">
+            Clear Filters
+          </button>
+          <button class="btn-primary" onclick="searchFossils()">
+            Search Sites
+          </button>
+        </div>
+      </div>
+
+      <div class="stats-bar">
+        <div class="stat">
+          <span>Showing</span>
+          <span class="stat-number" id="resultCount">0</span>
+          <span>sites</span>
+        </div>
+        <div class="stat">
+          Total in Territory: <span class="stat-number" id="totalCount">0</span>
+        </div>
+      </div>
+
+      <div id="results" class="results-grid"></div>
+    </div>
+
+    <script>
+      let fossilData = [];
+      let currentTerritory = "";
+      let currentTerritoryName = "";
+
+      const territoryNames = {
+        AB: "Alberta",
+        BC: "British Columbia",
+        MB: "Manitoba",
+        NB: "New Brunswick",
+        NL: "Newfoundland and Labrador",
+        NS: "Nova Scotia",
+        NT: "Northwest Territories",
+        NU: "Nunavut",
+        ON: "Ontario",
+        PE: "Prince Edward Island",
+        QC: "Quebec",
+        SK: "Saskatchewan",
+        YT: "Yukon",
+        AL: "Alabama",
+        AK: "Alaska",
+        AZ: "Arizona",
+        AR: "Arkansas",
+        CA: "California",
+        CO: "Colorado",
+        CT: "Connecticut",
+        DC: "District of Columbia",
+        DE: "Delaware",
+        FL: "Florida",
+        GA: "Georgia",
+        HI: "Hawaii",
+        ID: "Idaho",
+        IL: "Illinois",
+        IN: "Indiana",
+        IA: "Iowa",
+        KS: "Kansas",
+        KY: "Kentucky",
+        LA: "Louisiana",
+        ME: "Maine",
+        MD: "Maryland",
+        MA: "Massachusetts",
+        MI: "Michigan",
+        MN: "Minnesota",
+        MS: "Mississippi",
+        MO: "Missouri",
+        MT: "Montana",
+        NE: "Nebraska",
+        NV: "Nevada",
+        NH: "New Hampshire",
+        NJ: "New Jersey",
+        NM: "New Mexico",
+        NY: "New York",
+        NC: "North Carolina",
+        ND: "North Dakota",
+        OH: "Ohio",
+        OK: "Oklahoma",
+        OR: "Oregon",
+        PA: "Pennsylvania",
+        RI: "Rhode Island",
+        SC: "South Carolina",
+        SD: "South Dakota",
+        TN: "Tennessee",
+        TX: "Texas",
+        UT: "Utah",
+        VT: "Vermont",
+        VA: "Virginia",
+        WA: "Washington",
+        WV: "West Virginia",
+        WI: "Wisconsin",
+        WY: "Wyoming",
+        BA: "Bahamas",
+      };
+
+      function getTerritoryFromURL() {
+        const params = new URLSearchParams(window.location.search);
+        return params.get("territory") || "OH";
+      }
+
+      async function loadData() {
+        currentTerritory = getTerritoryFromURL().toUpperCase();
+        currentTerritoryName =
+          territoryNames[currentTerritory] || currentTerritory;
+
+        document.getElementById("territoryCode").textContent = currentTerritory;
+        document.getElementById("territoryName").textContent =
+          currentTerritoryName;
+        document.title = `Fossil Finder - ${currentTerritoryName}`;
+
+        try {
+          const response = await fetch(`/api/territory/${currentTerritory}`);
+
+          if (!response.ok) {
+            throw new Error("Territory data not found");
+          }
+
+          fossilData = await response.json();
+          populateFilters();
+          displayResults(fossilData);
+          document.getElementById("totalCount").textContent = fossilData.length;
+        } catch (error) {
+          console.error("Error loading data:", error);
+          document.getElementById("results").innerHTML = `
+          <div class="no-results">
+            <div class="no-results-icon">⚠️</div>
+            <p>No fossil data available for ${currentTerritoryName}.</p>
+            <p style="margin-top: 1rem;">
+              <a href="index.html" class="back-button">← Return to Territory Selection</a>
+            </p>
+          </div>
+        `;
+        }
+      }
+
+      function populateFilters() {
+        const ages = [
+          ...new Set(
+            fossilData.map((item) => item.age || item.Age).filter((age) => age),
+          ),
+        ].sort();
+        const ageSelect = document.getElementById("age");
+        ages.forEach((age) => {
+          const option = document.createElement("option");
+          option.value = age;
+          option.textContent = age;
+          ageSelect.appendChild(option);
+        });
+
+        const formations = [
+          ...new Set(
+            fossilData
+              .map((item) => item.formation || item.Formation)
+              .filter((f) => f),
+          ),
+        ].sort();
+        const formationSelect = document.getElementById("formation");
+        formations.forEach((formation) => {
+          const option = document.createElement("option");
+          option.value = formation;
+          option.textContent = formation;
+          formationSelect.appendChild(option);
+        });
+      }
+
+      function searchFossils() {
+        const locationFilter = document
+          .getElementById("location")
+          .value.toLowerCase();
+        const ageFilter = document.getElementById("age").value;
+        const formationFilter = document.getElementById("formation").value;
+        const fossilFilter = document
+          .getElementById("fossil")
+          .value.toLowerCase();
+
+        const filtered = fossilData.filter((item) => {
+          const location = item.location || item.Location || "";
+          const county = item.county || item.County || "";
+          const age = item.age || item.Age || "";
+          const formation = item.formation || item.Formation || "";
+          const fossils = item.fossils || item.Fossils || "";
+          const comments = item.comments || item.Comments || "";
+
+          const matchLocation =
+            !locationFilter ||
+            location.toLowerCase().includes(locationFilter) ||
+            county.toLowerCase().includes(locationFilter);
+
+          const matchAge = !ageFilter || age === ageFilter;
+          const matchFormation =
+            !formationFilter || formation === formationFilter;
+          const matchFossil =
+            !fossilFilter ||
+            fossils.toLowerCase().includes(fossilFilter) ||
+            comments.toLowerCase().includes(fossilFilter);
+
+          return matchLocation && matchAge && matchFormation && matchFossil;
+        });
+
+        displayResults(filtered);
+      }
+
+      function clearFilters() {
+        document.getElementById("location").value = "";
+        document.getElementById("age").value = "";
+        document.getElementById("formation").value = "";
+        document.getElementById("fossil").value = "";
+        displayResults(fossilData);
+      }
+
+      function getAgeBadgeClass(age) {
+        if (!age) return "";
+        const ageKey = age.toLowerCase().replace(/\s+/g, "-").split(/[,|]/)[0];
+        return `age-${ageKey}`;
+      }
+
+      function displayResults(results) {
+        const resultsContainer = document.getElementById("results");
+        document.getElementById("resultCount").textContent = results.length;
+
+        if (results.length === 0) {
+          resultsContainer.innerHTML = `
+          <div class="no-results">
+            <div class="no-results-icon">🔍</div>
+            <p>No fossil sites found matching your criteria.<br>Try adjusting your filters.</p>
+          </div>
+        `;
+          return;
+        }
+
+        resultsContainer.innerHTML = results
+          .map((item) => {
+            const location =
+              item.location || item.Location || "Unknown Location";
+            const county = item.county || item.County || "";
+            const age = item.age || item.Age || "";
+            const formation = item.formation || item.Formation || "";
+            const directions =
+              item.directions || item["Directions/Notes"] || "";
+            const fossils = item.fossils || item.Fossils || "";
+
+            return `
+          <div class="fossil-card">
+            <div class="card-header">
+              <div class="location-name">${location}</div>
+              ${county && county !== "-" ? `<span class="county-badge">${county} County</span>` : ""}
+            </div>
+            <div class="card-body">
+              ${
+                age
+                  ? `
+                <div class="info-row">
+                  <span class="info-label">Age:</span>
+                  <span class="info-value">
+                    <span class="age-badge ${getAgeBadgeClass(age)}">${age}</span>
+                  </span>
+                </div>
+              `
+                  : ""
+              }
+              ${
+                formation
+                  ? `
+                <div class="info-row">
+                  <span class="info-label">Formation:</span>
+                  <span class="info-value">${formation}</span>
+                </div>
+              `
+                  : ""
+              }
+              ${
+                directions
+                  ? `
+                <div class="info-row">
+                  <span class="info-label">Location:</span>
+                  <span class="info-value">${directions}</span>
+                </div>
+              `
+                  : ""
+              }
+              ${
+                fossils
+                  ? `
+                <div class="fossil-list">
+                  <strong>Fossils Found:</strong> ${fossils}
+                </div>
+              `
+                  : ""
+              }
+            </div>
+          </div>
+        `;
+          })
+          .join("");
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        ["location", "fossil"].forEach((id) => {
+          document.getElementById(id).addEventListener("keypress", (e) => {
+            if (e.key === "Enter") searchFossils();
+          });
+        });
+      });
+
+      loadData();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fossil Finder - North America</title>
+
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Literata:wght@400;600;700&family=Unbounded:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/landing.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Fossil Finder</h1>
+        <p class="subtitle">
+          Discover Paleontological Sites Across North America
+        </p>
+        <p class="description">
+          Explore fossil hunting locations from the Paleozoic to the Cenozoic
+          across the United States, Canada, and beyond.
+        </p>
+      </header>
+
+      <div class="stats-banner">
+        <div class="stat-card">
+          <span class="stat-number" id="totalTerritories">0</span>
+          <span class="stat-label">Territories</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number" id="totalLocations">0</span>
+          <span class="stat-label">Fossil Sites</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number" id="geologicAges">12+</span>
+          <span class="stat-label">Geologic Ages</span>
+        </div>
+      </div>
+
+      <div class="selection-panel">
+        <div class="panel-header">
+          <h2 class="panel-title">Select Your Location</h2>
+          <p class="panel-subtitle">
+            Choose a state or province to explore fossil hunting locations
+          </p>
+        </div>
+
+        <div class="country-tabs">
+          <button class="country-tab active" onclick="filterByCountry('all')">
+            All
+          </button>
+          <button class="country-tab" onclick="filterByCountry('USA')">
+            🇺🇸 United States
+          </button>
+          <button class="country-tab" onclick="filterByCountry('Canada')">
+            🇨🇦 Canada
+          </button>
+        </div>
+
+        <div class="search-box">
+          <input
+            type="text"
+            class="search-input"
+            id="territorySearch"
+            placeholder="Search for a state or province..."
+            autocomplete="off"
+          />
+        </div>
+
+        <div class="territories-grid" id="territoriesGrid">
+          <!-- Territories will be loaded here -->
+        </div>
+
+        <div class="legend">
+          <div class="legend-item">
+            <span class="legend-dot usa"></span>
+            <span>United States</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-dot canada"></span>
+            <span>Canada</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const territoryData = [
+        // Canadian Provinces & Territories
+        { code: "AB", name: "Alberta", country: "Canada" },
+        { code: "BC", name: "British Columbia", country: "Canada" },
+        { code: "MB", name: "Manitoba", country: "Canada" },
+        { code: "NB", name: "New Brunswick", country: "Canada" },
+        { code: "NL", name: "Newfoundland and Labrador", country: "Canada" },
+        { code: "NS", name: "Nova Scotia", country: "Canada" },
+        { code: "NT", name: "Northwest Territories", country: "Canada" },
+        { code: "NU", name: "Nunavut", country: "Canada" },
+        { code: "ON", name: "Ontario", country: "Canada" },
+        { code: "PE", name: "Prince Edward Island", country: "Canada" },
+        { code: "QC", name: "Quebec", country: "Canada" },
+        { code: "SK", name: "Saskatchewan", country: "Canada" },
+        { code: "YT", name: "Yukon", country: "Canada" },
+
+        // US States
+        { code: "AL", name: "Alabama", country: "USA" },
+        { code: "AK", name: "Alaska", country: "USA" },
+        { code: "AZ", name: "Arizona", country: "USA" },
+        { code: "AR", name: "Arkansas", country: "USA" },
+        { code: "CA", name: "California", country: "USA" },
+        { code: "CO", name: "Colorado", country: "USA" },
+        { code: "CT", name: "Connecticut", country: "USA" },
+        { code: "DC", name: "District of Columbia", country: "USA" },
+        { code: "DE", name: "Delaware", country: "USA" },
+        { code: "FL", name: "Florida", country: "USA" },
+        { code: "GA", name: "Georgia", country: "USA" },
+        { code: "HI", name: "Hawaii", country: "USA" },
+        { code: "ID", name: "Idaho", country: "USA" },
+        { code: "IL", name: "Illinois", country: "USA" },
+        { code: "IN", name: "Indiana", country: "USA" },
+        { code: "IA", name: "Iowa", country: "USA" },
+        { code: "KS", name: "Kansas", country: "USA" },
+        { code: "KY", name: "Kentucky", country: "USA" },
+        { code: "LA", name: "Louisiana", country: "USA" },
+        { code: "ME", name: "Maine", country: "USA" },
+        { code: "MD", name: "Maryland", country: "USA" },
+        { code: "MA", name: "Massachusetts", country: "USA" },
+        { code: "MI", name: "Michigan", country: "USA" },
+        { code: "MN", name: "Minnesota", country: "USA" },
+        { code: "MS", name: "Mississippi", country: "USA" },
+        { code: "MO", name: "Missouri", country: "USA" },
+        { code: "MT", name: "Montana", country: "USA" },
+        { code: "NE", name: "Nebraska", country: "USA" },
+        { code: "NV", name: "Nevada", country: "USA" },
+        { code: "NH", name: "New Hampshire", country: "USA" },
+        { code: "NJ", name: "New Jersey", country: "USA" },
+        { code: "NM", name: "New Mexico", country: "USA" },
+        { code: "NY", name: "New York", country: "USA" },
+        { code: "NC", name: "North Carolina", country: "USA" },
+        { code: "ND", name: "North Dakota", country: "USA" },
+        { code: "OH", name: "Ohio", country: "USA" },
+        { code: "OK", name: "Oklahoma", country: "USA" },
+        { code: "OR", name: "Oregon", country: "USA" },
+        { code: "PA", name: "Pennsylvania", country: "USA" },
+        { code: "RI", name: "Rhode Island", country: "USA" },
+        { code: "SC", name: "South Carolina", country: "USA" },
+        { code: "SD", name: "South Dakota", country: "USA" },
+        { code: "TN", name: "Tennessee", country: "USA" },
+        { code: "TX", name: "Texas", country: "USA" },
+        { code: "UT", name: "Utah", country: "USA" },
+        { code: "VT", name: "Vermont", country: "USA" },
+        { code: "VA", name: "Virginia", country: "USA" },
+        { code: "WA", name: "Washington", country: "USA" },
+        { code: "WV", name: "West Virginia", country: "USA" },
+        { code: "WI", name: "Wisconsin", country: "USA" },
+        { code: "WY", name: "Wyoming", country: "USA" },
+
+        // Other
+        { code: "BA", name: "Bahamas", country: "Other" },
+      ];
+
+      let territoryCounts = {};
+      let totalSites = 0;
+      let currentCountryFilter = "all";
+
+      async function loadMetadata() {
+        try {
+          const response = await fetch("/api/territories");
+          const metadata = await response.json();
+
+          // Build count lookup
+          metadata.territories.forEach((territory) => {
+            territoryCounts[territory.code] = territory.locationCount || 0;
+            totalSites += territory.locationCount || 0;
+          });
+
+          document.getElementById("totalLocations").textContent =
+            totalSites.toLocaleString();
+          document.getElementById("totalTerritories").textContent =
+            metadata.territories.length;
+        } catch (error) {
+          console.log("Using default territory data (metadata not available)");
+          document.getElementById("totalTerritories").textContent =
+            territoryData.length;
+        }
+      }
+
+      function filterByCountry(country) {
+        currentCountryFilter = country;
+
+        // Update active tab
+        document.querySelectorAll(".country-tab").forEach((tab) => {
+          tab.classList.remove("active");
+        });
+        event.target.classList.add("active");
+
+        renderTerritories();
+      }
+
+      function renderTerritories(searchFilter = "") {
+        const grid = document.getElementById("territoriesGrid");
+
+        const filtered = territoryData.filter((territory) => {
+          const matchesSearch =
+            territory.name.toLowerCase().includes(searchFilter.toLowerCase()) ||
+            territory.code.toLowerCase().includes(searchFilter.toLowerCase());
+
+          const matchesCountry =
+            currentCountryFilter === "all" ||
+            territory.country === currentCountryFilter;
+
+          return matchesSearch && matchesCountry;
+        });
+
+        grid.innerHTML = filtered
+          .map((territory) => {
+            const count = territoryCounts[territory.code] || "?";
+            const countryClass = territory.country.toLowerCase();
+
+            return `
+          <div class="territory-card ${countryClass}" onclick="selectTerritory('${territory.code}', '${territory.name}')">
+            <div class="territory-code">${territory.code}</div>
+            <div class="territory-name">${territory.name}</div>
+            <div class="territory-count">${count} sites</div>
+          </div>
+        `;
+          })
+          .join("");
+      }
+
+      function selectTerritory(code, name) {
+        window.location.href = `fossil-finder.html?territory=${code}`;
+      }
+
+      // Search functionality
+      document
+        .getElementById("territorySearch")
+        .addEventListener("input", (e) => {
+          renderTerritories(e.target.value);
+        });
+
+      // Initialize
+      loadMetadata();
+      renderTerritories();
+    </script>
+  </body>
+</html>
