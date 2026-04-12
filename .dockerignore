@@ -1,0 +1,53 @@
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.code-workspace
+.settings/
+.classpath
+.project
+
+# OS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Documentation
+docs/
+*.md
+!README.md
+
+# Scripts
+scripts/
+
+# Logs
+*.log
+logs/
+
+# Tests
+src/test/
+
+# CI/CD
+.github/
+
+# Data (scraped data - too large for container)
+data/
+*.json
+
+# Temp
+*.tmp
+*.bak
