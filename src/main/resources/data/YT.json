@@ -1,0 +1,41 @@
+[ {
+  "location" : "Old Crow River",
+  "county" : "-",
+  "state" : "Yukon",
+  "directions" : "YT",
+  "age" : "Fossils are found by screening in river gravels. Numerous sites. Site 44 is cited as major site for Rancho LaBrean fauna. Site 11A is said to be exceptionally diverse",
+  "formation" : "Pleistocene",
+  "fossils" : "",
+  "comments" : "Mammal Bones",
+  "reference" : "YT0001",
+  "latLong" : "Original says Alberta"
+}, {
+  "location" : "-",
+  "county" : "Yukon",
+  "state" : "Yukon",
+  "directions" : "YT",
+  "age" : "",
+  "formation" : "Devonian Middle",
+  "fossils" : "Michelle",
+  "comments" : "Brachiopod -Opsiconidion (20)",
+  "reference" : "YT0020",
+  "latLong" : ""
+}, {
+  "location" : "Beaver River",
+  "county" : "Yukon",
+  "state" : "Yukon",
+  "directions" : "YT",
+  "age" : "",
+  "formation" : "Silurian",
+  "fossils" : "",
+  "comments" : "vertebrates-Ariaspis,Dikenaspis,Homalaspidella,Ptomaspis,Traquairaspis?,Vernonaspis",
+  "reference" : "YT0002",
+  "latLong" : ""
+}, {
+  "location" : "Big Creek",
+  "county" : "Yukon",
+  "state" : "Yukon",
+  "directions" : "YT",
+  "age" : "",
+  "formation" : "Pleist"
+} ]

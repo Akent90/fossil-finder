@@ -1,0 +1,56 @@
+[ {
+  "location" : "Washington",
+  "county" : "-",
+  "state" : "District of Columbia",
+  "directions" : "DC",
+  "age" : "Dinosaur vertebrae in the Washington,DC area",
+  "formation" : "Cretaceous",
+  "fossils" : "Potomac",
+  "comments" : "?",
+  "reference" : "DC0001",
+  "latLong" : ""
+}, {
+  "location" : "Washington",
+  "county" : "-",
+  "state" : "District of Columbia",
+  "directions" : "DC",
+  "age" : "In area excavations and cuts",
+  "formation" : "Cretaceous",
+  "fossils" : "Arundel",
+  "comments" : "Creosaurus vertebrae",
+  "reference" : "DC0002",
+  "latLong" : ""
+}, {
+  "location" : "Washington",
+  "county" : "-",
+  "state" : "District of Columbia",
+  "directions" : "DC",
+  "age" : "In excavation at 1st and Channing Street NW in 1942",
+  "formation" : "Cretaceous",
+  "fossils" : "Potomac",
+  "comments" : "dinosaur bones",
+  "reference" : "DC0003",
+  "latLong" : ""
+}, {
+  "location" : "Washington",
+  "county" : "-",
+  "state" : "District of Columbia",
+  "directions" : "DC",
+  "age" : "In excavation at 1st and F street in 1898",
+  "formation" : "Cretaceous",
+  "fossils" : "Potomac",
+  "comments" : "dinosaur bones",
+  "reference" : "DC0004",
+  "latLong" : ""
+}, {
+  "location" : "Washington",
+  "county" : "-",
+  "state" : "District of Columbia",
+  "directions" : "DC",
+  "age" : "along Good Hope Hill",
+  "formation" : "Cretaceous-Tertiary",
+  "fossils" : "",
+  "comments" : "Sharks teeth in greensand",
+  "reference" : "DC0005",
+  "latLong" : ""
+} ]
