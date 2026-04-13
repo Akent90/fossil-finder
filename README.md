@@ -1,185 +1,186 @@
-# fossil-finder
+# 🦖 Fossil Finder North America
 
-North American fossil location finder with Spring Boot REST API and modern web interface
+A modern Spring Boot REST API for discovering fossil hunting locations across North America. Search through 12,000+ documented fossil sites spanning 50 US states, 13 Canadian provinces, and the Bahamas.
 
-# 🦴 Fossil Finder - North America
+## ✨ Features
 
-[![Java](https://img.shields.io/badge/Java-17-orange.svg)](https://www.java.com)
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2.0-brightgreen.svg)](https://spring.io/projects/spring-boot)
-[![Maven](https://img.shields.io/badge/Maven-3.9+-blue.svg)](https://maven.apache.org)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-
-A comprehensive Spring Boot web application for discovering paleontological sites across 65 territories in North America.
-
-## 🌟 Features
-
-- **65 Territories**: All 50 US states, 13 Canadian provinces/territories, DC, and Bahamas
-- **Spring Boot REST API**: Production-ready with health checks and metrics
-- **Advanced Search**: Filter by location, geological age, formation, and fossil type
-- **Beautiful UI**: Responsive design with geological theme
-- **Auto Scraper**: Fetch data from fossilspot.com
-- **API Documentation**: Interactive Swagger UI
-- **Cloud Ready**: Docker support and GCP Cloud Run compatible
+- 🔍 **Smart Search**: Search by location name, fossil type, geological age, or formation
+- 🗺️ **65 Territories**: Complete coverage of US states, Canadian provinces, DC, and Bahamas
+- 📍 **12,000+ Locations**: Comprehensive database of fossil hunting sites
+- 🚀 **Fast API**: Built with Spring Boot for high performance
+- 📊 **Rich Data**: Includes directions, geological info, fossil types, and coordinates
+- 🌐 **CORS Enabled**: Ready for frontend integration
 
 ## 🚀 Quick Start
 
 ### Prerequisites
-
 - Java 17 or higher
-- Maven 3.9 or higher
-- Modern web browser
+- Maven 3.6+
 
-### Installation
+### Run Locally
 
 ```bash
-# Clone repository
-git clone https://github.com/YOUR_USERNAME/fossil-finder.git
+# Clone the repository
+git clone https://github.com/yourusername/fossil-finder.git
 cd fossil-finder
 
-# Build
-./scripts/build.sh
+# Build the project
+mvn clean package
 
-# Run server
-./scripts/run-server.sh
+# Run the application
+java -jar target/fossil-finder-1.0.0.jar
 
-# Open browser
-open http://localhost:8080
+# API is now running at http://localhost:8080
 ```
 
-## 📁 Project Structure
+## 📡 API Endpoints
 
+### Get All Territories
+```http
+GET /api/territories
+```
+
+Returns metadata for all 65 territories.
+
+### Get Territory Locations
+```http
+GET /api/territories/{code}
+```
+
+Get all fossil locations for a specific territory (e.g., `OH` for Ohio).
+
+### Search Locations
+```http
+GET /api/search?q=trilobite&territory=OH
+```
+
+Search for fossil locations by keyword across all fields.
+
+**Query Parameters:**
+- `q` - Search query (required)
+- `territory` - Filter by territory code (optional)
+
+### Health Check
+```http
+GET /api/health
+```
+
+## 📂 Project Structure
 fossil-finder/
-├── src/main/java/com/fossilfinder/
-│ ├── FossilFinderApplication.java # Main Spring Boot app
-│ ├── config/
-│ │ └── WebConfig.java # CORS configuration
-│ ├── controller/
-│ │ ├── TerritoryController.java # REST endpoints
-│ │ └── HealthController.java # Health check
-│ ├── service/
-│ │ ├── FossilDataService.java # Business logic
-│ │ └── ScraperService.java # Web scraper
-│ ├── model/
-│ │ ├── FossilLocation.java # Data models
-│ │ ├── Territory.java
-│ │ └── SearchResult.java
-│ └── exception/
-│ └── GlobalExceptionHandler.java # Error handling
-├── src/main/resources/
-│ ├── application.yml # Configuration
-│ ├── static/
-│ │ ├── css/ # Stylesheets
-│ │ ├── index.html # Landing page
-│ │ └── fossil-finder.html # Search page
-│ └── data/ # JSON data
-├── src/test/java/ # Unit tests
-├── scripts/ # Build scripts
-├── Dockerfile # Docker config
-└── pom.xml # Maven config
+├── src/
+│   ├── main/
+│   │   ├── java/com/fossilfinder/
+│   │   │   ├── FossilFinderApplication.java
+│   │   │   ├── ScraperCommandLineRunner.java
+│   │   │   ├── config/
+│   │   │   │   └── WebConfig.java
+│   │   │   ├── controller/
+│   │   │   │   ├── TerritoryController.java
+│   │   │   │   └── HealthController.java
+│   │   │   ├── service/
+│   │   │   │   ├── FossilDataService.java
+│   │   │   │   └── ScraperService.java
+│   │   │   ├── model/
+│   │   │   │   ├── FossilLocation.java
+│   │   │   │   ├── Territory.java
+│   │   │   │   └── SearchResult.java
+│   │   │   └── exception/
+│   │   │       └── GlobalExceptionHandler.java
+│   │   └── resources/
+│   │       ├── application.yml
+│   │       ├── static/
+│   │       │   ├── index.html
+│   │       │   ├── fossil-finder.html
+│   │       │   └── css/
+│   │       └── data/
+│   │           └── [65 territory JSON files]
+│   └── test/java/
+├── Dockerfile
+├── pom.xml
+└── README.md
 
-## 🔧 API Endpoints
+## 🗄️ Data Structure
 
-GET /health - Health check
-GET /api/territories - List all territories
-GET /api/territory/{code} - Get territory data
-GET /api/search?q={term} - Search fossils
-GET /swagger-ui.html - API Documentation
-GET /actuator/health - Actuator health
+### Territory Metadata
+```json
+{
+  "code": "OH",
+  "name": "Ohio",
+  "country": "United States",
+  "dataFile": "OH.json",
+  "locationCount": 304
+}
+```
+
+### Fossil Location
+```json
+{
+  "location": "Caesar Creek Lake",
+  "county": "Warren County",
+  "state": "Ohio",
+  "directions": "Off Route 73",
+  "age": "Ordovician",
+  "formation": "Waynesville Formation",
+  "fossils": "Brachiopods, trilobites, crinoids",
+  "comments": "Excellent fossil collecting",
+  "reference": "Field guide to Ohio fossils",
+  "latLong": "39.5,-84.1"
+}
+```
 
 ## 🛠️ Development
 
-### Run with Maven
-
+### Run Tests
 ```bash
-# Development mode (hot reload)
-mvn spring-boot:run
-
-# Run tests
 mvn test
-
-# Package
-mvn clean package
 ```
 
-### Run Scraper
-
+### Run Web Scraper
 ```bash
-# Scrape all 65 territories (takes 5-10 minutes)
-./scripts/run-scraper.sh
-
-# Or with Maven
-mvn spring-boot:run -Dspring-boot.run.arguments=--scraper.enabled=true
+# Scrape fresh data from fossilspot.com
+java -jar target/fossil-finder-1.0.0.jar --scraper
 ```
 
-### Docker
-
+### Build Docker Image
 ```bash
-# Build image
-docker build -t fossil-finder:latest .
-
-# Run container
-docker run -p 8080:8080 fossil-finder:latest
-
-# Test
-curl http://localhost:8080/health
+docker build -t fossil-finder .
+docker run -p 8080:8080 fossil-finder
 ```
 
-## 🧪 Testing
+## 🌍 Covered Territories
 
-```bash
-# Run all tests
-mvn test
+**United States (50 states + DC)**
+- All 50 states plus District of Columbia
 
-# Run specific test
-mvn test -Dtest=TerritoryControllerTest
+**Canada (13 provinces/territories)**
+- Alberta, British Columbia, Manitoba, New Brunswick, Newfoundland and Labrador
+- Northwest Territories, Nova Scotia, Nunavut, Ontario, Prince Edward Island
+- Quebec, Saskatchewan, Yukon
 
-# With coverage
-mvn test jacoco:report
-```
+**Caribbean**
+- Bahamas
 
-## 📊 Technology Stack
+## 📊 Statistics
 
-- **Backend**: Spring Boot 3.2.0, Java 17
-- **Web**: Spring Boot Web (REST), Jackson (JSON)
-- **Monitoring**: Spring Boot Actuator
-- **Documentation**: Springdoc OpenAPI (Swagger)
-- **Testing**: JUnit 5, MockMvc, Mockito
-- **Build**: Maven 3.9
-- **Scraping**: JSoup 1.17.2
-- **Utilities**: Lombok
-- **Frontend**: Vanilla JavaScript, CSS3, HTML5
-
-## 🌐 Data Source
-
-Data scraped from [fossilspot.com](http://www.fossilspot.com) - a comprehensive fossil location database.
+- **Total Territories**: 65
+- **Total Locations**: 12,000+
+- **Most Locations**: New York (1,013), Oregon (660), California (588)
+- **Data Source**: fossilspot.com
+- **Last Updated**: April 2026
 
 ## 🤝 Contributing
 
-Contributions welcome! Please:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'feat: add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## 📝 License
 
-This project is licensed under the MIT License - see [LICENSE](LICENSE) file.
-
-## ⚖️ Legal & Ethics
-
-- For educational and research purposes
-- Always get permission before collecting on private land
-- Follow local laws and regulations
-- Respect protected areas
+This project is licensed under the MIT License.
 
 ## 🙏 Acknowledgments
 
-- Data from [fossilspot.com](http://www.fossilspot.com)
-- Built with Spring Boot, Maven, and modern web technologies
-- Geological design inspired by sedimentary layers
+- Data sourced from [fossilspot.com](http://www.fossilspot.com)
+- Built with Spring Boot, Jackson, and JSoup
 
 ---
 
-**Happy Fossil Hunting! 🦕**
+⭐ **Star this repo if you find it useful!**
