@@ -45,19 +45,19 @@
   "name" : "Delaware",
   "country" : "United States",
   "dataFile" : "DE.json",
-  "locationCount" : 0
+  "locationCount" : 56
 }, {
   "code" : "FL",
   "name" : "Florida",
   "country" : "United States",
   "dataFile" : "FL.json",
-  "locationCount" : 0
+  "locationCount" : 212
 }, {
   "code" : "GA",
   "name" : "Georgia",
   "country" : "United States",
   "dataFile" : "GA.json",
-  "locationCount" : 0
+  "locationCount" : 130
 }, {
   "code" : "HI",
   "name" : "Hawaii",
@@ -75,7 +75,7 @@
   "name" : "Illinois",
   "country" : "United States",
   "dataFile" : "IL.json",
-  "locationCount" : 0
+  "locationCount" : 212
 }, {
   "code" : "IN",
   "name" : "Indiana",

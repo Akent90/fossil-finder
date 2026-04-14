@@ -2,6 +2,7 @@ package com.fossilfinder.controller;
 
 import com.fossilfinder.model.FossilLocation;
 import com.fossilfinder.model.SearchResult;
+import com.fossilfinder.model.Territory;
 import com.fossilfinder.service.FossilDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Territory REST Controller
@@ -34,9 +34,9 @@ public class TerritoryController {
 
     @GetMapping("/territories")
     @Operation(summary = "Get all territories", description = "Returns metadata for all available territories")
-    public ResponseEntity<Map<String, Object>> getAllTerritories() {
+    public ResponseEntity<List<Territory>> getAllTerritories() {
         try {
-            Map<String, Object> territories = fossilDataService.getAllTerritories();
+            List<Territory> territories = fossilDataService.getAllTerritories();
             return ResponseEntity.ok(territories);
         } catch (IOException e) {
             log.error("Error loading territories", e);

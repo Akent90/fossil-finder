@@ -3,6 +3,7 @@ package com.fossilfinder.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fossilfinder.model.FossilLocation;
+import com.fossilfinder.model.Territory;
 import com.fossilfinder.model.SearchResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +16,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Fossil Data Service
@@ -40,10 +40,10 @@ public class FossilDataService {
     /**
      * Get all territories metadata
      */
-    public Map<String, Object> getAllTerritories() throws IOException {
+    public List<Territory> getAllTerritories() throws IOException {
         Resource resource = resourceLoader.getResource(dataDirectory + "territories.json");
         try (InputStream is = resource.getInputStream()) {
-            return objectMapper.readValue(is, new TypeReference<Map<String, Object>>() {
+            return objectMapper.readValue(is, new TypeReference<List<Territory>>() {
             });
         }
     }
@@ -73,12 +73,10 @@ public class FossilDataService {
         String lowerQuery = query.toLowerCase();
 
         try {
-            Map<String, Object> metadata = getAllTerritories();
-            @SuppressWarnings("unchecked")
-            List<Map<String, Object>> territories = (List<Map<String, Object>>) metadata.get("territories");
+            List<Territory> territories = getAllTerritories();
 
-            for (Map<String, Object> territory : territories) {
-                String code = (String) territory.get("code");
+            for (Territory territory : territories) {
+                String code = territory.getCode();
 
                 // Skip if territory filter is set and doesn't match
                 if (territoryFilter != null && !territoryFilter.isEmpty() && !code.equals(territoryFilter)) {

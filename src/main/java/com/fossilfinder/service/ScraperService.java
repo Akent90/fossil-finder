@@ -231,26 +231,27 @@ public class ScraperService {
 
         FossilLocation location = new FossilLocation();
 
-        // Parse cells - typical format: Location, County, Directions, Age, Formation,
+        // CORRECT ORDER: Location, County, State/Province, Directions, Age, Formation,
         // Fossils, Comments, Reference, Lat/Long
         if (cells.size() > 0)
             location.setLocation(cells.get(0).text().trim());
         if (cells.size() > 1)
             location.setCounty(cells.get(1).text().trim());
-        if (cells.size() > 2)
-            location.setDirections(cells.get(2).text().trim());
+        // Skip index 2 (State/Province) - already set this from TerritoryInfo
         if (cells.size() > 3)
-            location.setAge(cells.get(3).text().trim());
+            location.setDirections(cells.get(3).text().trim());
         if (cells.size() > 4)
-            location.setFormation(cells.get(4).text().trim());
+            location.setAge(cells.get(4).text().trim());
         if (cells.size() > 5)
-            location.setFossils(cells.get(5).text().trim());
+            location.setFormation(cells.get(5).text().trim());
         if (cells.size() > 6)
-            location.setComments(cells.get(6).text().trim());
+            location.setFossils(cells.get(6).text().trim());
         if (cells.size() > 7)
-            location.setReference(cells.get(7).text().trim());
+            location.setComments(cells.get(7).text().trim());
         if (cells.size() > 8)
-            location.setLatLong(cells.get(8).text().trim());
+            location.setReference(cells.get(8).text().trim());
+        if (cells.size() > 9)
+            location.setLatLong(cells.get(9).text().trim());
 
         // Set state from territory info
         location.setState(info.name);

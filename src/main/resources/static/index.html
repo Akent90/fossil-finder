@@ -171,22 +171,24 @@
       async function loadMetadata() {
         try {
           const response = await fetch("/api/territories");
-          const metadata = await response.json();
-
+          const territories = await response.json();
           // Build count lookup
-          metadata.territories.forEach((territory) => {
+          territories.forEach((territory) => {
             territoryCounts[territory.code] = territory.locationCount || 0;
             totalSites += territory.locationCount || 0;
           });
-
           document.getElementById("totalLocations").textContent =
             totalSites.toLocaleString();
           document.getElementById("totalTerritories").textContent =
-            metadata.territories.length;
+            territories.length;
+
+          // Re-render territories now that we have counts
+          renderTerritories();
         } catch (error) {
           console.log("Using default territory data (metadata not available)");
           document.getElementById("totalTerritories").textContent =
             territoryData.length;
+          renderTerritories();
         }
       }
 
@@ -246,7 +248,6 @@
 
       // Initialize
       loadMetadata();
-      renderTerritories();
     </script>
   </body>
 </html>
