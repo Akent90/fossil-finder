@@ -1,58 +1,14 @@
-# Spring Boot Application Configuration
+server:
+  port: ${PORT:8080}
+
 spring:
   application:
     name: fossil-finder
 
-  # Jackson JSON Configuration
-  jackson:
-    default-property-inclusion: non_null
-    serialization:
-      write-dates-as-timestamps: false
-      indent-output: true
-
-  # Static Resources (serve webapp files)
-  web:
-    resources:
-      static-locations: classpath:/static/
-
-  # DevTools
-  devtools:
-    restart:
-      enabled: true
-
-# Server Configuration
-server:
-  port: ${PORT:8080}
-  compression:
-    enabled: true
-  error:
-    include-message: always
-
-# Actuator Configuration
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,info,metrics
-  endpoint:
-    health:
-      show-details: when-authorized
-
-# Springdoc OpenAPI (Swagger)
-springdoc:
-  api-docs:
-    path: /api-docs
-  swagger-ui:
-    path: /swagger-ui.html
-    enabled: true
-
-# Custom Configuration
 fossil:
   data:
     directory: classpath:data/
 
-# Logging
 logging:
   level:
     com.fossilfinder: INFO
-    org.springframework: WARN
