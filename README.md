@@ -12,7 +12,7 @@ A modern Spring Boot REST API for discovering fossil hunting locations across No
 
 ## 🌐 Live Demo
 
-**[https://fossil-finder-717506296838.us-central1.run.app/index.html](https://fossil-finder-717506296838.us-central1.run.app/index.html)**
+**<a href="https://fossil-finder-717506296838.us-central1.run.app/index.html" target="_blank">https://fossil-finder-717506296838.us-central1.run.app/index.html</a>**
 
 Deployed on Google Cloud Run.
 
