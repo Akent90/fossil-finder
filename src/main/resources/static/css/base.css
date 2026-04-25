@@ -20,13 +20,16 @@
   --fossil-cream: #f5ebe0;
   --limestone: #e8dcc8;
   
+  /* USFS/USGS Inspired Palette */
+  --forest-green: #2d5016;
+  --sage-green: #8a9a5b;
+  --mustard-yellow: #d4a017;
+  --terracotta: #c65d3b;
+  --warm-brown: #8b6f47;
+  
   /* Accent Colors */
   --accent-amber: #d97706;
   --accent-rust: #c2410c;
-  
-  /* Country Indicators */
-  --usa-blue: #3b82f6;
-  --canada-red: #ef4444;
   
   /* Typography */
   --font-display: 'Unbounded', sans-serif;
@@ -154,7 +157,7 @@ select:focus {
   transform: translateY(-1px);
 }
 
-/* Badges */
+/* Geological Age Badges - Based on International Chronostratigraphic Chart Colors */
 .age-badge {
   display: inline-block;
   padding: 0.25rem 0.625rem;
@@ -164,14 +167,44 @@ select:focus {
   margin-right: 0.5rem;
 }
 
-.age-devonian { background: #fbbf24; color: #78350f; }
-.age-silurian { background: #60a5fa; color: #1e3a8a; }
-.age-ordovician { background: #a78bfa; color: #4c1d95; }
-.age-pennsylvanian { background: #34d399; color: #064e3b; }
-.age-mississippian { background: #f472b6; color: #831843; }
-.age-permian { background: #fb923c; color: #7c2d12; }
-.age-carboniferous { background: #4ade80; color: #14532d; }
-.age-pleistocene { background: #cbd5e1; color: #1e293b; }
+/* Paleozoic Era (542-251 Ma) */
+.age-cambrian { background: #7fa056; color: #1a3d0f; }
+.age-ordovician { background: #009270; color: #fff; }
+.age-silurian { background: #b3e1b6; color: #1f5024; }
+.age-devonian { background: #cb8c37; color: #3d2710; }
+.age-mississippian { background: #67a599; color: #1a3d35; }
+.age-pennsylvanian { background: #99c08d; color: #2a4523; }
+.age-carboniferous { background: #67a599; color: #1a3d35; }
+.age-permian { background: #f04028; color: #fff; }
+.age-paleozoic { background: #99c08d; color: #2a4523; }
+
+/* Mesozoic Era (251-66 Ma) */
+.age-triassic { background: #812b92; color: #fff; }
+.age-jurassic { background: #34b2c9; color: #0d3d47; }
+.age-cretaceous { background: #7fc64e; color: #2d4519; }
+.age-mesozoic { background: #67c5ca; color: #1a4447; }
+
+/* Cenozoic Era (66 Ma-present) */
+.age-paleocene { background: #fd9a52; color: #4a2e15; }
+.age-eocene { background: #fdc366; color: #5c3a14; }
+.age-oligocene { background: #fdd9b0; color: #6b4820; }
+.age-miocene { background: #ffff99; color: #666600; }
+.age-pliocene { background: #ffffcc; color: #7a7a33; }
+.age-pleistocene { background: #fff2ae; color: #7a6f33; }
+.age-holocene { background: #fef2e0; color: #8b7355; }
+.age-tertiary { background: #fd9a52; color: #4a2e15; }
+.age-quaternary { background: #fff2ae; color: #7a6f33; }
+.age-cenozoic { background: #ffff99; color: #666600; }
+.age-recent { background: #fef2e0; color: #8b7355; }
+
+/* Precambrian (4600-542 Ma) */
+.age-precambrian { background: #f74370; color: #fff; }
+.age-proterozoic { background: #f74370; color: #fff; }
+.age-neoproterozoic { background: #febe71; color: #5c3815; }
+.age-ediacaran { background: #fed96a; color: #5c4615; }
+
+/* Unknown/Missing */
+.age-unknown { background: #9ca3af; color: #1f2937; }
 
 /* Animations */
 @keyframes fadeInDown {

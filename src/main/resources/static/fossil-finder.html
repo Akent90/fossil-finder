@@ -78,6 +78,91 @@
         </div>
       </div>
 
+      <!-- Weather Widget -->
+      <div
+        id="weatherWidget"
+        style="
+          display: none;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          color: white;
+          padding: 20px;
+          border-radius: 12px;
+          margin-bottom: 20px;
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        "
+      >
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          "
+        >
+          <div>
+            <h3
+              style="margin: 0 0 10px 0; font-size: 1.2rem"
+              id="weatherLocation"
+            >
+              Loading...
+            </h3>
+            <div style="display: flex; align-items: center; gap: 15px">
+              <div style="font-size: 3rem; font-weight: bold" id="weatherTemp">
+                --°
+              </div>
+              <div>
+                <div
+                  style="font-size: 1.1rem; text-transform: capitalize"
+                  id="weatherDesc"
+                >
+                  --
+                </div>
+                <div style="opacity: 0.9; font-size: 0.9rem">
+                  Feels like <span id="weatherFeels">--</span>°F
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="text-align: right">
+            <img
+              id="weatherIcon"
+              src=""
+              alt="Weather"
+              style="
+                width: 80px;
+                height: 80px;
+                filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+              "
+            />
+            <div
+              style="
+                display: flex;
+                gap: 20px;
+                margin-top: 10px;
+                font-size: 0.9rem;
+                justify-content: flex-end;
+              "
+            >
+              <div style="display: flex; align-items: center; gap: 5px">
+                <img
+                  src="https://openweathermap.org/img/wn/50d@2x.png"
+                  style="
+                    width: 20px;
+                    height: 20px;
+                    filter: brightness(0) invert(1);
+                  "
+                  alt="humidity"
+                />
+                <span id="weatherHumidity">--</span>%
+              </div>
+              <div style="display: flex; align-items: center; gap: 5px">
+                <span style="font-size: 1.2rem">💨</span>
+                <span id="weatherWind">--</span> mph
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div id="results" class="results-grid"></div>
     </div>
 
@@ -180,6 +265,9 @@
           populateFilters();
           displayResults(fossilData);
           document.getElementById("totalCount").textContent = fossilData.length;
+
+          // Load weather for the territory on initial load
+          loadTerritoryWeather();
         } catch (error) {
           console.error("Error loading data:", error);
           document.getElementById("results").innerHTML = `
@@ -263,6 +351,13 @@
           .getElementById("fossil")
           .value.toLowerCase();
 
+        // Update weather based on location filter
+        if (locationFilter) {
+          loadWeather(locationFilter);
+        } else {
+          loadTerritoryWeather();
+        }
+
         const filtered = fossilData.filter((item) => {
           const location = item.location || item.Location || "";
           const county = item.county || item.County || "";
@@ -296,13 +391,132 @@
         document.getElementById("age").value = "";
         document.getElementById("formation").value = "";
         document.getElementById("fossil").value = "";
+        loadTerritoryWeather();
         displayResults(fossilData);
+      }
+
+      async function loadTerritoryWeather() {
+        try {
+          // Load weather for the territory/state center
+          const state = currentTerritoryName;
+
+          document.getElementById("weatherWidget").style.display = "block";
+          document.getElementById("weatherLocation").textContent =
+            `Weather in ${state}`;
+          document.getElementById("weatherTemp").textContent = "...";
+
+          const response = await fetch(
+            `/api/weather?county=&state=${encodeURIComponent(currentTerritory)}`,
+          );
+
+          if (!response.ok) {
+            throw new Error("Weather data not available");
+          }
+
+          const weather = await response.json();
+          displayWeather(weather);
+        } catch (error) {
+          console.error("Error loading weather:", error);
+          document.getElementById("weatherWidget").style.display = "none";
+        }
+      }
+
+      async function loadWeather(locationString) {
+        try {
+          let county = locationString;
+          let state = currentTerritory;
+
+          county = county.split(",")[0].trim();
+
+          document.getElementById("weatherWidget").style.display = "block";
+          document.getElementById("weatherLocation").textContent =
+            `Weather for ${locationString}`;
+          document.getElementById("weatherTemp").textContent = "...";
+
+          const response = await fetch(
+            `/api/weather?county=${encodeURIComponent(county)}&state=${encodeURIComponent(state)}`,
+          );
+
+          if (!response.ok) {
+            throw new Error("Weather data not available");
+          }
+
+          const weather = await response.json();
+          displayWeather(weather);
+        } catch (error) {
+          console.error("Error loading weather:", error);
+          document.getElementById("weatherWidget").style.display = "none";
+        }
+      }
+
+      function displayWeather(weather) {
+        document.getElementById("weatherLocation").textContent =
+          `Current Weather in ${weather.location}`;
+        document.getElementById("weatherTemp").textContent =
+          Math.round(weather.temperature) + "°";
+        document.getElementById("weatherFeels").textContent = Math.round(
+          weather.feelsLike,
+        );
+        document.getElementById("weatherDesc").textContent =
+          weather.description;
+        document.getElementById("weatherHumidity").textContent =
+          weather.humidity;
+        document.getElementById("weatherWind").textContent = Math.round(
+          weather.windSpeed,
+        );
+
+        document.getElementById("weatherIcon").src =
+          `https://openweathermap.org/img/wn/${weather.icon}@2x.png`;
+
+        document.getElementById("weatherWidget").style.display = "block";
       }
 
       function getAgeBadgeClass(age) {
         if (!age) return "";
-        const ageKey = age.toLowerCase().replace(/\s+/g, "-").split(/[,|]/)[0];
-        return `age-${ageKey}`;
+
+        // Normalize age string: remove modifiers, punctuation, brackets
+        const normalized = age
+          .toLowerCase()
+          .replace(/\[?\?\]?/g, "") // Remove [?] and ?
+          .replace(/\s+(upper|lower|middle|and)/g, "") // Remove position modifiers
+          .replace(/\s+\(.*?\)/g, "") // Remove parenthetical notes like (Uintan)
+          .split(/[-,|]/)[0] // Take first part before hyphen/comma/pipe
+          .trim();
+
+        // Map to standard geological periods
+        const periodMap = {
+          cambrian: "cambrian",
+          ordovician: "ordovician",
+          silurian: "silurian",
+          devonian: "devonian",
+          mississippian: "mississippian",
+          pennsylvanian: "pennsylvanian",
+          carboniferous: "carboniferous",
+          permian: "permian",
+          triassic: "triassic",
+          jurassic: "jurassic",
+          cretaceous: "cretaceous",
+          paleocene: "paleocene",
+          eocene: "eocene",
+          oligocene: "oligocene",
+          miocene: "miocene",
+          pliocene: "pliocene",
+          pleistocene: "pleistocene",
+          holocene: "holocene",
+          tertiary: "tertiary",
+          quaternary: "quaternary",
+          paleozoic: "paleozoic",
+          mesozoic: "mesozoic",
+          cenozoic: "cenozoic",
+          precambrian: "precambrian",
+          proterozoic: "proterozoic",
+          neoproterozoic: "neoproterozoic",
+          ediacaran: "ediacaran",
+          recent: "recent",
+          pleist: "pleistocene", // Handle typo
+        };
+
+        return `age-${periodMap[normalized] || "unknown"}`;
       }
 
       function displayResults(results) {

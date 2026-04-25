@@ -57,3 +57,4 @@ dist/
 
 # Spring Boot
 application-local.yml
+.env

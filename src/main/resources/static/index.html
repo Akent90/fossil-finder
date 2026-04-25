@@ -56,10 +56,10 @@
             All
           </button>
           <button class="country-tab" onclick="filterByCountry('USA')">
-            🇺🇸 United States
+            United States
           </button>
           <button class="country-tab" onclick="filterByCountry('Canada')">
-            🇨🇦 Canada
+            Canada
           </button>
         </div>
 
@@ -75,17 +75,6 @@
 
         <div class="territories-grid" id="territoriesGrid">
           <!-- Territories will be loaded here -->
-        </div>
-
-        <div class="legend">
-          <div class="legend-item">
-            <span class="legend-dot usa"></span>
-            <span>United States</span>
-          </div>
-          <div class="legend-item">
-            <span class="legend-dot canada"></span>
-            <span>Canada</span>
-          </div>
         </div>
       </div>
     </div>
@@ -222,10 +211,9 @@
         grid.innerHTML = filtered
           .map((territory) => {
             const count = territoryCounts[territory.code] || "?";
-            const countryClass = territory.country.toLowerCase();
 
             return `
-          <div class="territory-card ${countryClass}" onclick="selectTerritory('${territory.code}', '${territory.name}')">
+          <div class="territory-card" onclick="selectTerritory('${territory.code}', '${territory.name}')">
             <div class="territory-code">${territory.code}</div>
             <div class="territory-name">${territory.name}</div>
             <div class="territory-count">${count} sites</div>
