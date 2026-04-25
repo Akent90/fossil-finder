@@ -32,11 +32,9 @@
         <div class="filter-grid">
           <div class="filter-group">
             <label for="location">Location / County</label>
-            <input
-              type="text"
-              id="location"
-              placeholder="e.g., Cincinnati, Adams County"
-            />
+            <select id="location">
+              <option value="">All Locations</option>
+            </select>
           </div>
           <div class="filter-group">
             <label for="age">Geological Age</label>
@@ -197,6 +195,7 @@
       }
 
       function populateFilters() {
+        // Populate Age dropdown
         const ages = [
           ...new Set(
             fossilData.map((item) => item.age || item.Age).filter((age) => age),
@@ -210,6 +209,7 @@
           ageSelect.appendChild(option);
         });
 
+        // Populate Formation dropdown
         const formations = [
           ...new Set(
             fossilData
@@ -224,12 +224,39 @@
           option.textContent = formation;
           formationSelect.appendChild(option);
         });
+
+        // Populate Location/County dropdown
+        const locations = [
+          ...new Set(
+            fossilData
+              .map((item) => {
+                const location = item.location || item.Location || "";
+                const county = item.county || item.County || "";
+                // Combine location and county for better filtering
+                if (location && county && county !== "-") {
+                  return `${location}, ${county}`;
+                } else if (location) {
+                  return location;
+                } else if (county && county !== "-") {
+                  return county;
+                }
+                return null;
+              })
+              .filter((loc) => loc),
+          ),
+        ].sort();
+
+        const locationSelect = document.getElementById("location");
+        locations.forEach((location) => {
+          const option = document.createElement("option");
+          option.value = location;
+          option.textContent = location;
+          locationSelect.appendChild(option);
+        });
       }
 
       function searchFossils() {
-        const locationFilter = document
-          .getElementById("location")
-          .value.toLowerCase();
+        const locationFilter = document.getElementById("location").value;
         const ageFilter = document.getElementById("age").value;
         const formationFilter = document.getElementById("formation").value;
         const fossilFilter = document
@@ -246,8 +273,9 @@
 
           const matchLocation =
             !locationFilter ||
-            location.toLowerCase().includes(locationFilter) ||
-            county.toLowerCase().includes(locationFilter);
+            `${location}, ${county}` === locationFilter ||
+            location === locationFilter ||
+            county === locationFilter;
 
           const matchAge = !ageFilter || age === ageFilter;
           const matchFormation =
@@ -358,10 +386,8 @@
       }
 
       document.addEventListener("DOMContentLoaded", () => {
-        ["location", "fossil"].forEach((id) => {
-          document.getElementById(id).addEventListener("keypress", (e) => {
-            if (e.key === "Enter") searchFossils();
-          });
+        document.getElementById("fossil").addEventListener("keypress", (e) => {
+          if (e.key === "Enter") searchFossils();
         });
       });
 
